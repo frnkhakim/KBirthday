@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 
 type Particle = {
-  kind: "petal" | "confetti" | "heart" | "star" | "dust";
+  kind: "petal" | "confetti" | "heart" | "star" | "dust" | "trail";
   x: number;
   y: number;
   vx: number;
@@ -70,6 +70,25 @@ function makePetal(y?: number): Particle {
     w: Math.random() * 6.3,
     life: 1,
   };
+}
+
+/** Little gold sparks left behind wherever she touches or moves. */
+export function trail(x: number, y: number, n = 3) {
+  for (let i = 0; i < n; i++) {
+    particles.push({
+      kind: "trail",
+      x: x + (Math.random() - 0.5) * 14,
+      y: y + (Math.random() - 0.5) * 14,
+      vx: (Math.random() - 0.5) * 1.2,
+      vy: -0.3 - Math.random() * 1.2,
+      s: 3 + Math.random() * 5,
+      r: Math.random() * 6.3,
+      vr: 0,
+      c: Math.random() < 0.6 ? "#F3DEAE" : "#E9A7AF",
+      w: Math.random() * 6.3,
+      life: 1,
+    });
+  }
 }
 
 /** Burst of gold confetti from a point on screen. */
@@ -164,6 +183,31 @@ export default function Petals() {
       ctx.fill();
     };
 
+    // On a mouse the wand tip carries a twinkling star; on touch there is no
+    // pointer, so the trail under her finger does the sparkling instead.
+    const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    const tip = { x: -100, y: -100, on: false, w: 0 };
+    let last = 0;
+    const onMove = (e: PointerEvent) => {
+      if (reduce) return;
+      tip.x = e.clientX;
+      tip.y = e.clientY;
+      tip.on = fine && e.pointerType === "mouse";
+      const now = performance.now();
+      if (now - last < (fine ? 40 : 24)) return;
+      last = now;
+      trail(e.clientX, e.clientY, fine ? 1 : 2);
+    };
+    const onLeave = () => {
+      tip.on = false;
+    };
+    document.addEventListener("pointerleave", onLeave);
+    const onDown = (e: PointerEvent) => {
+      if (!reduce) trail(e.clientX, e.clientY, 14);
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerdown", onDown, { passive: true });
+
     let raf = 0;
     const tick = () => {
       ctx.clearRect(0, 0, W, H);
@@ -176,6 +220,12 @@ export default function Petals() {
           if (p.y > H + 20) Object.assign(p, makePetal(-20));
         } else if (p.kind === "star") {
           p.w += 0.035 + p.s * 0.002;
+        } else if (p.kind === "trail") {
+          p.w += 0.3;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.life -= 0.04;
+          if (p.life <= 0) return false;
         } else if (p.kind === "dust") {
           p.w += 0.03;
           p.x += p.vx + Math.sin(p.w) * 0.2;
@@ -197,8 +247,8 @@ export default function Petals() {
         ctx.globalAlpha =
           p.kind === "petal" ? 0.75 : p.kind === "star" ? twinkle * 0.9 : p.kind === "dust" ? 0.35 + twinkle * 0.4 : Math.max(p.life, 0);
         ctx.fillStyle = p.c;
-        if (p.kind === "star") {
-          drawStar(p.s * (0.6 + twinkle * 0.6));
+        if (p.kind === "star" || p.kind === "trail") {
+          drawStar(p.kind === "trail" ? p.s * p.life : p.s * (0.6 + twinkle * 0.6));
         } else if (p.kind === "dust") {
           ctx.beginPath();
           ctx.arc(0, 0, p.s, 0, 6.3);
@@ -215,6 +265,23 @@ export default function Petals() {
         ctx.restore();
         return true;
       });
+      if (tip.on) {
+        tip.w += 0.12;
+        const tw = 0.7 + Math.sin(tip.w) * 0.3;
+        ctx.save();
+        ctx.translate(tip.x, tip.y);
+        ctx.globalAlpha = 0.9;
+        ctx.shadowColor = "rgba(243,222,174,.9)";
+        ctx.shadowBlur = 18 * tw;
+        ctx.fillStyle = "#F3DEAE";
+        ctx.rotate(tip.w * 0.5);
+        drawStar(7 * tw);
+        ctx.rotate(0.8);
+        ctx.globalAlpha = 0.5;
+        ctx.fillStyle = "#E9A7AF";
+        drawStar(4.5 * tw);
+        ctx.restore();
+      }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -222,6 +289,9 @@ export default function Petals() {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", size);
+      window.removeEventListener("pointermove", onMove);
+      document.removeEventListener("pointerleave", onLeave);
+      window.removeEventListener("pointerdown", onDown);
     };
   }, []);
 

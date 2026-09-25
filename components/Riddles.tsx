@@ -92,7 +92,7 @@ export default function Riddles({ name, riddles, onSolved }: Props) {
         {done ? (
           <div className={styles.riddleDone}>
             <div className={styles.script}>Unlocked</div>
-            <p>Clever girl. Your invitation is on its way.</p>
+            <p>Clever girl. Now, about that cake...</p>
           </div>
         ) : (
           <form onSubmit={submit}>

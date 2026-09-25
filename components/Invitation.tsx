@@ -7,13 +7,17 @@ import Petals, { burst, hearts } from "./Petals";
 import Envelope from "./Envelope";
 import Countdown from "./Countdown";
 import Riddles from "./Riddles";
+import Celebration from "./Celebration";
 import Music from "./Music";
+import { isBirthdayYet } from "@/lib/date";
 
 export default function Invitation() {
-  const [stage, setStage] = useState<"envelope" | "riddles" | "invite">("envelope");
+  const [stage, setStage] = useState<"envelope" | "riddles" | "celebrate" | "invite">("envelope");
   const opened = stage === "invite";
   const [rsvp, setRsvp] = useState(false);
   const [shimmer, setShimmer] = useState(0);
+  const [today, setToday] = useState(false);
+  useEffect(() => setToday(isBirthdayYet()), []);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -44,10 +48,12 @@ export default function Invitation() {
           <Envelope
             name={config.name}
             age={config.age}
-            onOpened={() => setStage(config.riddles.length ? "riddles" : "invite")}
+            onOpened={() => setStage(config.riddles.length ? "riddles" : "celebrate")}
           />
         ) : stage === "riddles" ? (
-          <Riddles name={config.name} riddles={config.riddles} onSolved={() => setStage("invite")} />
+          <Riddles name={config.name} riddles={config.riddles} onSolved={() => setStage("celebrate")} />
+        ) : stage === "celebrate" ? (
+          <Celebration name={config.name} age={config.age} candles={config.candles} onDone={() => setStage("invite")} />
         ) : (
           <article className={styles.invite} data-shimmer={shimmer}>
             <div className={styles.eyebrow}>You are cordially invited</div>
@@ -72,7 +78,7 @@ export default function Invitation() {
               <img className={styles.figure} src={config.figure} alt={`${config.name}, illustrated`} />
               <div className={styles.age}>
                 {config.age}
-                <small>Happy Birthday</small>
+                <small>{today ? "Happy Birthday" : "Almost"}</small>
               </div>
             </div>
 
@@ -104,7 +110,7 @@ export default function Invitation() {
 
             <div>
               <div className={styles.eyebrow} style={{ marginBottom: 12 }}>
-                Until we raise a glass
+                Until dinner is served
               </div>
               <Countdown target={config.dinner} name={config.name} />
             </div>

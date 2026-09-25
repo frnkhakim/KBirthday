@@ -1,6 +1,6 @@
 # Karen's 31st
 
-A surprise birthday invitation built with Next.js. She taps a wax seal, the envelope opens, and she solves three riddles to open the gold locks, and the invitation slides out with the video and a live countdown to dinner.
+A surprise birthday invitation built with Next.js. She taps a wax seal, the envelope opens, and she solves three riddles to open the gold locks, pops balloons and blows out the candles on her cake, and then the invitation slides out with the video and a live countdown to dinner.
 
 ## Run it locally
 
@@ -33,7 +33,9 @@ This writes a static site to the `out` folder. Upload the **contents** of `out` 
 - `components/Invitation.tsx` — the invitation card
 - `components/Envelope.tsx` — the tap-to-open envelope
 - `components/Countdown.tsx` — countdown to dinner
-- `components/Petals.tsx` — falling petals, confetti and hearts
+- `components/Riddles.tsx` — the three gold locks
+- `components/Celebration.tsx` — balloons to pop and candles to blow out
+- `components/Petals.tsx` — falling petals, sparkles, confetti, hearts and the finger trail
 - `public/invitation.mp4` — the slideshow video shown in the invitation
 - `public/photo-video.mp4` — the earlier video with her photo in a gold frame
 - `public/slides/` — the six slides as images

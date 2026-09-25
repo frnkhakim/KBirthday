@@ -17,6 +17,10 @@ export const config = {
   age: 31,
   from: "Frank",
 
+  // Her actual birthday (the page says "Happy Birthday" only from this day onwards;
+  // before that it keeps the wish for the day itself).
+  birthday: "2026-09-29",
+
   // Dinner date and time (South African time, UTC+2).
   dinner: "2026-09-29T19:00:00+02:00",
   dateLine: "Tuesday",
@@ -46,11 +50,14 @@ export const config = {
       hint: "Spring has just started.",
     },
     {
-      question: "Who loves you more than anyone in the world?",
-      answers: ["frank", "my husband", "husband", "you"],
-      hint: "He's the one who made this.",
+      question: "On which day of the week is your birthday dinner?",
+      answers: ["tuesday", "tues", "tue"],
+      hint: "The day after Monday.",
     },
   ] as Riddle[],
+
+  // Candles on the cake she blows out after the riddles (keep it 3 to 7 so they fit on a phone).
+  candles: 5,
 
   // Music (public/perfect.mp3). It starts on its own as soon as the phone allows
   // sound (on most phones that is her first tap anywhere), and she can stop it
