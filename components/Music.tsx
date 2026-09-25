@@ -63,6 +63,11 @@ export function resumeMusic() {
   startMusic();
 }
 
+/** Has the song managed to start yet? */
+export function isMusicPlaying() {
+  return state === "playing";
+}
+
 export default function Music() {
   const [s, setS] = useState<State>(state);
 

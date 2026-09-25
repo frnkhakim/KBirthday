@@ -9,10 +9,11 @@ import Countdown from "./Countdown";
 import Riddles from "./Riddles";
 import Celebration from "./Celebration";
 import Music from "./Music";
+import Welcome from "./Welcome";
 import { isBirthdayYet } from "@/lib/date";
 
 export default function Invitation() {
-  const [stage, setStage] = useState<"envelope" | "riddles" | "celebrate" | "invite">("envelope");
+  const [stage, setStage] = useState<"welcome" | "envelope" | "riddles" | "celebrate" | "invite">("welcome");
   const opened = stage === "invite";
   const [rsvp, setRsvp] = useState(false);
   const [shimmer, setShimmer] = useState(0);
@@ -44,7 +45,9 @@ export default function Invitation() {
       <Petals />
       <Music />
       <main className={styles.main}>
-        {stage === "envelope" ? (
+        {stage === "welcome" ? (
+          <Welcome name={config.name} onBegin={() => setStage("envelope")} />
+        ) : stage === "envelope" ? (
           <Envelope
             name={config.name}
             age={config.age}

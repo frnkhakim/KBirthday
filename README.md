@@ -17,7 +17,7 @@ Everything editable is in `lib/config.ts`: her name, the date and time, the rest
 
 ## Music
 
-The song is `public/perfect.mp3` (the file name is set in `lib/config.ts` under `song`). It starts by itself as soon as the phone allows sound, which on most phones means her first tap anywhere on the page, then fades in and loops. The pill in the top corner stops it. If the file is missing the app simply stays silent.
+The song is `public/perfect.mp3` (the file name is set in `lib/config.ts` under `song`). Browsers only allow sound after a tap, so the page opens on a short "tap anywhere" screen; that tap starts the song (fading in, looping) and reveals the envelope. If the browser allows autoplay the screen skips itself. The pill in the top corner stops it. If the file is missing the app simply stays silent.
 
 ## Build for a website
 
