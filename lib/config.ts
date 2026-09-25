@@ -52,11 +52,12 @@ export const config = {
     },
   ] as Riddle[],
 
-  // Music. Put the MP3 in the /public folder with this exact name.
-  // It starts (softly, fading in) the moment she taps the wax seal.
+  // Music (public/perfect.mp3). It starts on its own as soon as the phone allows
+  // sound (on most phones that is her first tap anywhere), and she can stop it
+  // with the pill in the top corner.
   song: "/perfect.mp3",
   songTitle: "Perfect",
-  songArtist: "Ed Sheeran",
+  songArtist: "Ed Sheeran & Beyonc\u00e9",
   songVolume: 0.55, // 0 to 1
 
   // Files in /public

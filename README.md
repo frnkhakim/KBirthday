@@ -17,7 +17,7 @@ Everything editable is in `lib/config.ts`: her name, the date and time, the rest
 
 ## Music
 
-Put the song in `public/perfect.mp3` (the file name is set in `lib/config.ts` under `song`). It fades in the moment she taps the wax seal and loops quietly; a small pill in the top corner lets her pause it. If the file is missing the app simply stays silent.
+The song is `public/perfect.mp3` (the file name is set in `lib/config.ts` under `song`). It starts by itself as soon as the phone allows sound, which on most phones means her first tap anywhere on the page, then fades in and loops. The pill in the top corner stops it. If the file is missing the app simply stays silent.
 
 ## Build for a website
 

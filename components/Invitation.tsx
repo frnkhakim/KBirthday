@@ -7,7 +7,7 @@ import Petals, { burst, hearts } from "./Petals";
 import Envelope from "./Envelope";
 import Countdown from "./Countdown";
 import Riddles from "./Riddles";
-import Music, { startMusic } from "./Music";
+import Music from "./Music";
 
 export default function Invitation() {
   const [stage, setStage] = useState<"envelope" | "riddles" | "invite">("envelope");
@@ -44,10 +44,7 @@ export default function Invitation() {
           <Envelope
             name={config.name}
             age={config.age}
-            onOpened={() => {
-              startMusic();
-              setStage(config.riddles.length ? "riddles" : "invite");
-            }}
+            onOpened={() => setStage(config.riddles.length ? "riddles" : "invite")}
           />
         ) : stage === "riddles" ? (
           <Riddles name={config.name} riddles={config.riddles} onSolved={() => setStage("invite")} />
