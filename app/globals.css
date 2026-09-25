@@ -1,0 +1,51 @@
+:root {
+  --blush: #f4dcd6;
+  --blush-deep: #ebc6bf;
+  --rose: #c4727e;
+  --wine: #5b2633;
+  --cream: #fff8f4;
+  --gold: #b8894a;
+  --gold-lt: #e7c98f;
+  --gold-dk: #8c6430;
+  --ink-soft: #8a5a63;
+  --foil: linear-gradient(115deg, #8c6430 0%, #e7c98f 28%, #b8894a 48%, #f3deae 66%, #9a7038 100%);
+  --script: "Pinyon Script", "Snell Roundhand", "Apple Chancery", cursive;
+  --serif: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --sans: "Jost", "Futura", "Avenir Next", system-ui, sans-serif;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: radial-gradient(120% 80% at 50% 0%, #fbeae5 0%, var(--blush) 55%, var(--blush-deep) 100%) fixed,
+    var(--blush);
+  color: var(--wine);
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+button {
+  font-family: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
