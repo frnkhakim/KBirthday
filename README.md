@@ -1,6 +1,6 @@
 # Karen's 31st
 
-A surprise birthday invitation built with Next.js. She taps a wax seal, the envelope opens, and the invitation slides out with the video, a live countdown to dinner and a hidden guest list.
+A surprise birthday invitation built with Next.js. She taps a wax seal, the envelope opens, and she solves three riddles to open the gold locks, and the invitation slides out with the video and a live countdown to dinner.
 
 ## Run it locally
 
@@ -13,7 +13,11 @@ Open http://localhost:3000.
 
 ## Change the details
 
-Everything editable is in `lib/config.ts`: her name, the date and time, the restaurant, the wording and the sign-off. The video and pictures live in `public/`.
+Everything editable is in `lib/config.ts`: her name, the date and time, the restaurant, the wording, the sign-off, and the three riddles (change them to things only she would know). The video and pictures live in `public/`.
+
+## Music
+
+Put the song in `public/perfect.mp3` (the file name is set in `lib/config.ts` under `song`). It fades in the moment she taps the wax seal and loops quietly; a small pill in the top corner lets her pause it. If the file is missing the app simply stays silent.
 
 ## Build for a website
 

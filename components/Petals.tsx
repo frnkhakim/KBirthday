@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 
 type Particle = {
-  kind: "petal" | "confetti" | "heart";
+  kind: "petal" | "confetti" | "heart" | "star" | "dust";
   x: number;
   y: number;
   vx: number;
@@ -23,6 +23,38 @@ const HEART_COLOURS = ["#C4727E", "#D98A95", "#E7C98F"];
 let particles: Particle[] = [];
 let W = 0;
 let H = 0;
+
+function makeStar(): Particle {
+  return {
+    kind: "star",
+    x: Math.random() * W,
+    y: Math.random() * H,
+    s: 4 + Math.random() * 7,
+    vy: 0,
+    vx: 0,
+    r: Math.random() * 6.3,
+    vr: 0,
+    c: Math.random() < 0.5 ? "#F3DEAE" : "#E7C98F",
+    w: Math.random() * 6.3,
+    life: 1,
+  };
+}
+
+function makeDust(): Particle {
+  return {
+    kind: "dust",
+    x: Math.random() * W,
+    y: H + 10,
+    s: 1 + Math.random() * 2.2,
+    vy: -(0.25 + Math.random() * 0.5),
+    vx: -0.15 + Math.random() * 0.3,
+    r: 0,
+    vr: 0,
+    c: "#E7C98F",
+    w: Math.random() * 6.3,
+    life: 1,
+  };
+}
 
 function makePetal(y?: number): Particle {
   return {
@@ -103,7 +135,26 @@ export default function Petals() {
     window.addEventListener("resize", size);
 
     particles = [];
-    if (!reduce) for (let i = 0; i < 18; i++) particles.push(makePetal());
+    if (!reduce) {
+      for (let i = 0; i < 18; i++) particles.push(makePetal());
+      for (let i = 0; i < 26; i++) particles.push(makeStar());
+      for (let i = 0; i < 30; i++) {
+        const d = makeDust();
+        d.y = Math.random() * H;
+        particles.push(d);
+      }
+    }
+
+    const drawStar = (s: number) => {
+      ctx.beginPath();
+      for (let i = 0; i < 8; i++) {
+        const a = (i * Math.PI) / 4;
+        const rr = i % 2 ? s * 0.3 : s;
+        ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr);
+      }
+      ctx.closePath();
+      ctx.fill();
+    };
 
     const drawHeart = (s: number) => {
       ctx.beginPath();
@@ -123,6 +174,13 @@ export default function Petals() {
           p.y += p.vy;
           p.r += p.vr;
           if (p.y > H + 20) Object.assign(p, makePetal(-20));
+        } else if (p.kind === "star") {
+          p.w += 0.035 + p.s * 0.002;
+        } else if (p.kind === "dust") {
+          p.w += 0.03;
+          p.x += p.vx + Math.sin(p.w) * 0.2;
+          p.y += p.vy;
+          if (p.y < -10) Object.assign(p, makeDust());
         } else {
           p.vy += p.kind === "heart" ? -0.02 : 0.18;
           p.vx *= 0.99;
@@ -135,9 +193,17 @@ export default function Petals() {
         ctx.save();
         ctx.translate(p.x, p.y);
         ctx.rotate(p.r);
-        ctx.globalAlpha = p.kind === "petal" ? 0.75 : Math.max(p.life, 0);
+        const twinkle = Math.max(0, Math.sin(p.w));
+        ctx.globalAlpha =
+          p.kind === "petal" ? 0.75 : p.kind === "star" ? twinkle * 0.9 : p.kind === "dust" ? 0.35 + twinkle * 0.4 : Math.max(p.life, 0);
         ctx.fillStyle = p.c;
-        if (p.kind === "petal") {
+        if (p.kind === "star") {
+          drawStar(p.s * (0.6 + twinkle * 0.6));
+        } else if (p.kind === "dust") {
+          ctx.beginPath();
+          ctx.arc(0, 0, p.s, 0, 6.3);
+          ctx.fill();
+        } else if (p.kind === "petal") {
           ctx.beginPath();
           ctx.ellipse(0, 0, p.s, p.s * 0.55, 0, 0, 6.3);
           ctx.fill();

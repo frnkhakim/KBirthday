@@ -6,10 +6,14 @@ import { config } from "@/lib/config";
 import Petals, { burst, hearts } from "./Petals";
 import Envelope from "./Envelope";
 import Countdown from "./Countdown";
+import Riddles from "./Riddles";
+import Music, { startMusic } from "./Music";
 
 export default function Invitation() {
-  const [opened, setOpened] = useState(false);
+  const [stage, setStage] = useState<"envelope" | "riddles" | "invite">("envelope");
+  const opened = stage === "invite";
   const [rsvp, setRsvp] = useState(false);
+  const [shimmer, setShimmer] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -19,6 +23,9 @@ export default function Invitation() {
     if (!reduce) burst(window.innerWidth / 2, window.innerHeight * 0.25, 90);
     // The video is muted so browsers allow it to autoplay once the page opens.
     videoRef.current?.play().catch(() => {});
+    // a gold shimmer sweeps the card now and again
+    const id = window.setInterval(() => setShimmer((n) => n + 1), 7000);
+    return () => window.clearInterval(id);
   }, [opened]);
 
   const handleRsvp = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -31,11 +38,21 @@ export default function Invitation() {
   return (
     <>
       <Petals />
+      <Music />
       <main className={styles.main}>
-        {!opened ? (
-          <Envelope name={config.name} age={config.age} onOpened={() => setOpened(true)} />
+        {stage === "envelope" ? (
+          <Envelope
+            name={config.name}
+            age={config.age}
+            onOpened={() => {
+              startMusic();
+              setStage(config.riddles.length ? "riddles" : "invite");
+            }}
+          />
+        ) : stage === "riddles" ? (
+          <Riddles name={config.name} riddles={config.riddles} onSolved={() => setStage("invite")} />
         ) : (
-          <article className={styles.invite}>
+          <article className={styles.invite} data-shimmer={shimmer}>
             <div className={styles.eyebrow}>You are cordially invited</div>
             <h1 className={styles.name}>{config.name}</h1>
             <p className={styles.lead}>{config.lead}</p>
@@ -95,14 +112,10 @@ export default function Invitation() {
               <Countdown target={config.dinner} name={config.name} />
             </div>
 
-            <div className={styles.guests}>
-              <h2>The guest list</h2>
-              <div className={styles.silhouettes} aria-hidden="true">
-                {Array.from({ length: config.guestCount }).map((_, i) => (
-                  <i key={i}>?</i>
-                ))}
-              </div>
-              <p>{config.guestsLine}</p>
+            <div className={styles.promise}>
+              <span className={styles.promiseStar} aria-hidden="true">&#10022;</span>
+              <p>{config.promise}</p>
+              <span className={styles.promiseStar} aria-hidden="true">&#10022;</span>
             </div>
 
             <p className={styles.note}>{config.note}</p>
